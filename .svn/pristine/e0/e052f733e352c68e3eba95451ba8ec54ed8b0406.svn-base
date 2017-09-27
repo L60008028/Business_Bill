@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace model
+{
+   public class MyDelegateFunc
+    {
+       public static MyDelegateDefine.DelegateWriteFmLog WriteFmLogEvent;
+        public static void WriteFmLog(string txt)
+        {
+            if (WriteFmLogEvent!=null )
+            {
+               WriteFmLogEvent(txt);
+            }
+        }
+
+      
+    }
+}

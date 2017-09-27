@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using model;
+using MySql.Data.MySqlClient;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace dal
+{
+    public class BnetInfoDAL
+    {
+
+        LocalParams lp;
+        public BnetInfoDAL()
+        {
+            lp = new LocalParams();
+            MySqlHelper.ConnectionstringLocalTransaction = lp.SqlConnStr;
+        }
+
+        public static string TABLE_NAME = "t_bnetinfo";
+        private BnetInfoModel FillData(SqlDataReader sdr)
+        {
+            BnetInfoModel model =null;
+            try
+            {
+                model = new BnetInfoModel();
+                model.BnetId = sdr.GetString(0);
+                model.BnetAccount = sdr.GetString(1);
+                model.Price = sdr.GetString(2);
+                model.AttributeId = sdr.GetInt32(3);
+             
+            }
+            catch (Exception)
+            {
+ 
+            }
+ 
+            return model;
+        }
+
+        public BnetInfoModel GetByIdAccount(string bnetId, string bnetAccount)
+        {
+            string sql = string.Format("select BnetId,BnetAccount,Price ,AttributeId from jy15.gdkltx.dbo.t_bnetinfo where BnetId={0} and BnetAccount={1}", bnetId, bnetAccount);
+            using (SqlDataReader sdr = SqlHelper.ExecuteReader(lp.SqlConnStr, CommandType.Text, sql, null))
+            {
+                if (sdr.Read())
+                {
+                    BnetInfoModel m = this.FillData(sdr);
+                    return m;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 查询所有
+        /// </summary>
+        /// <returns>bnetid,model</returns>
+        public Dictionary<string, BnetInfoModel> GetAll()
+        {
+            Dictionary<string, BnetInfoModel> dic = new Dictionary<string, BnetInfoModel>();
+            string sql = "  select BnetId,BnetAccount,Price,AttributeId from jy15.gdkltx.dbo.t_bnetinfo";
+            using (SqlDataReader sdr = SqlHelper.ExecuteReader(lp.SqlConnStr, CommandType.Text, sql, null))
+            {
+                while (sdr.Read())
+                {
+                    BnetInfoModel m = this.FillData(sdr);
+                    dic.Add(m.BnetId, m);
+                }
+            }
+            return dic;
+        }
+
+    }//end
+}//end

@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using dal;
+using System.Data.SqlClient;
+
+namespace bll
+{
+
+    public class SQLbll
+    {
+        /// <summary>
+        /// 检测数据库连接串是否有效
+        /// </summary>
+        /// <param name="constr"></param>
+        /// <returns></returns>
+        public static bool IsConn(string constr)
+        {
+            try
+            {
+                string sql = "select now()";
+                object obj = MySqlHelper.ExecuteScalar(constr, System.Data.CommandType.Text, sql, null);
+                if (obj != null)
+                {
+                    return true;
+                }
+            }
+            catch (SqlException ex)
+            { 
+
+            }
+            return false;
+        }
+
+        public static int BatchExec(List<string> list)
+        {
+           List<string> relist= MySqlHelper.BatchExec(MySqlHelper.ConnectionstringLocalTransaction,list);
+           return relist.Count;
+        }
+    }//end
+}
